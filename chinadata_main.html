@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>中國官方報紙查詢系統</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="title">中國媒體資料查詢</h1>
+
+    <form id="searchForm" class="form">
+      <!-- 報紙選單 -->
+      <div class="form-group">
+        <label for="paper">選擇資料</label>
+        <select id="paper" name="paper">
+          <option value="JFJB">解放軍報</option>
+          <option value="GMB">光明日報</option>
+          <option value="Weibo_RMRB">人民日報_微博發文</option>
+        </select>
+      </div>
+
+      <!-- 日期範圍 -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="start_date">起始日期</label>
+          <input type="date" id="start_date" name="start_date" />
+        </div>
+        <div class="form-group">
+          <label for="end_date">結束日期</label>
+          <input type="date" id="end_date" name="end_date" />
+        </div>
+      </div>
+
+      <!-- 關鍵字 -->
+      <div class="form-group">
+        <label for="keyword">標題關鍵字（可選）</label>
+        <input type="text" id="keyword" name="keyword" placeholder="例如：台灣" />
+      </div>
+
+      <!-- 錯誤訊息 -->
+      <p id="errorMsg" class="error-message" style="display:none;"></p>
+
+      <!-- 查詢按鈕 -->
+      <div class="form-group center">
+        <button type="submit" class="btn">查詢</button>
+      </div>
+    </form>
+
+    <!-- 查詢結果區 -->
+    <div id="results" class="results">
+      <p class="placeholder">（查詢結果將顯示在這裡）</p>
+    </div>
+  </div>
+  <script>
+    document.getElementById("searchForm").addEventListener("submit", function (e) {
+      const startDate = document.getElementById("start_date").value;
+      const endDate = document.getElementById("end_date").value;
+      const errorMsg = document.getElementById("errorMsg");
+  
+      // 清空舊訊息
+      errorMsg.style.display = "none";
+      errorMsg.textContent = "";
+  
+      if (!startDate || !endDate) {
+        e.preventDefault();
+        errorMsg.textContent = "⚠️ 請輸入起始日期與結束日期";
+        errorMsg.style.display = "block";
+      } else if (startDate > endDate) {
+        e.preventDefault();
+        errorMsg.textContent = "⚠️ 起始日期不可晚於結束日期";
+        errorMsg.style.display = "block";
+      }
+    });
+</script>
+</body>
+</html>
