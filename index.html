@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>中國官方報紙資料平台｜入口首頁</title>
+  <meta name="description" content="提供中國官方報紙資料的線上查詢與下載。支援日期與關鍵字檢索，未來將串接更多資料庫。" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:,"> <!-- 可之後換成你的 favicon -->
+</head>
+<body>
+
+  <!-- 導覽列 -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">ChinaPress Data</a>
+      <nav class="nav-links">
+        <a href="index.html" class="active">首頁</a>
+        <a href="chinapress.html">查詢</a>
+        <a href="#" aria-disabled="true" class="muted">資料集</a>
+        <a href="#" aria-disabled="true" class="muted">關於</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero 區 -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1 class="hero-title">中國官方資料平台</h1>
+      <p class="hero-subtitle">
+       獲得中國官方相關出版及貼文資料。<br />
+        透過日期與關鍵字快速檢索，未來將持續擴充更多資料庫。
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="search_page.html">立即查詢</a>
+        <a class="btn btn-secondary" href="#datasets">瀏覽資料集</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 功能/資料集卡片 -->
+  <main class="container narrow" id="datasets">
+    <h2 class="section-title">可用資料集</h2>
+
+    <div class="card-grid">
+      <!-- 卡片 1：解放軍報 / 光明日報（同頁查詢） -->
+      <article class="card">
+        <div class="card-body">
+          <h3 class="card-title">中國官方報紙查詢</h3>
+          <p class="card-text">
+            支援 <strong>解放軍報（JFJB）</strong> 與 <strong>光明日報（GMB）</strong> 的日期與關鍵字檢索，結果可分頁瀏覽。
+          </p>
+          <a class="btn btn-link" href="chinapaper.html">前往查詢</a>
+        </div>
+      </article>
+
+      <!-- 卡片 2：預留未來資料集 -->
+      <article class="card muted">
+        <div class="card-body">
+          <h3 class="card-title">國家通訊社資料（預告）</h3>
+          <p class="card-text">即將上線：新華社等資料索引，統一入口管理。</p>
+          <button class="btn btn-disabled" disabled>即將推出</button>
+        </div>
+      </article>
+
+      <!-- 卡片 3：預留未來資料集 -->
+      <article class="card muted">
+        <div class="card-body">
+          <h3 class="card-title">政策文件／白皮書（預告）</h3>
+          <p class="card-text">規劃中：文本下載與段落搜尋，支援主題標註。</p>
+          <button class="btn btn-disabled" disabled>規劃中</button>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <!-- 特色/賣點 -->
+  <section class="features">
+    <div class="container narrow">
+      <h2 class="section-title">關於這個網站</h2>
+      <ul class="feature-list">
+        <li><strong>輕量快速：</strong> 前端純靜態、後端 FastAPI，載入迅速。</li>
+        <li><strong>學術友善：</strong> 支援日期/關鍵字檢索與分頁，便於研究與蒐集。</li>
+        <li><strong>可擴充：</strong> 後續可接更多資料庫，維持統一入口與一致體驗。</li>
+        <li><strong>成本控管：</strong> 前端 GitHub Pages、後端 Render 免費層即可運行。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 頁尾 -->
+  <footer class="footer">
+    <div class="container narrow footer-inner">
+      <p>© <span id="y"></span> ChinaPress Data · 作品集專案</p>
+      <p class="muted">本網站為學術/作品展示用途。資料來源與使用請依各資料集授權為準。</p>
+    </div>
+  </footer>
+
+  <script>
+    // 動態年份（可有可無）
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
