@@ -34,6 +34,31 @@ function init() {
 // 查詢按鈕按下後負責呼叫fetchResults() function
 function handleSearchSubmit(e) {
   e.preventDefault();
+  
+  const startDate = document.getElementById("start_date").value;
+  const endDate = document.getElementById("end_date").value;
+  const errorMsgEl = document.getElementById("errorMsg");
+
+  function showError(msg) {
+    errorMsgEl.textContent = msg;
+    errorMsgEl.style.display = "block";
+  }
+
+  function clearError() {
+    errorMsgEl.textContent = "";
+    errorMsgEl.style.display = "none";
+  }
+
+  clearError();
+
+  if (!startDate || !endDate) {
+    showError("⚠️ 請輸入起始日期與結束日期");
+    return;
+  } else if (startDate > endDate) {
+    showError("⚠️ 起始日期不可晚於結束日期");
+    return;
+  }
+
   currentPage = 1;
   fetchResults();
 }
