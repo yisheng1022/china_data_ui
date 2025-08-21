@@ -80,7 +80,7 @@ async function fetchResults() {
   url.searchParams.set("start_date", startDate);
   url.searchParams.set("end_date", endDate);
   url.searchParams.set("limit", limit);
-  url.searchParams.set("skip", currentPage);
+  url.searchParams.set("page", currentPage);
   if (keyword) url.searchParams.set("keyword", keyword);
 
   try {
@@ -104,6 +104,7 @@ async function fetchResults() {
 
 function renderResults(data) {
   const resultsDiv = document.getElementById("results");
+  if (!resultsDiv) return; // 畫面上沒有結果區塊時略過
   if (!data.length) {
     resultsDiv.innerHTML = `<p class="placeholder">沒有找到符合的結果。</p>`;
     return;
@@ -125,6 +126,7 @@ function renderResults(data) {
 
 function renderTotalMessage() {
   const totalMsg = document.getElementById("totalMsg");
+  if (!totalMsg) return; // 沒有摘要區塊時略過
   const startIdx = (currentPage - 1) * limit + 1;
   const endIdx = startIdx + currentResults.length - 1;
   totalMsg.textContent = `共找到 ${totalResults} 筆資料，顯示第 ${startIdx} - ${endIdx} 筆`;
@@ -134,6 +136,8 @@ function renderPagination() {
   const prevBtn = document.getElementById("prevPageBtn");
   const nextBtn = document.getElementById("nextPageBtn");
   const downloadBtn = document.getElementById("downloadCsvBtn");
+
+  if (!prevBtn || !nextBtn || !downloadBtn) return; // 沒有分頁/下載按鈕時略過
 
   const maxPage = Math.ceil(totalResults / limit);
 
@@ -146,8 +150,14 @@ function renderPagination() {
 }
 
 function resetUI() {
-  document.getElementById("results").innerHTML = `<p class="placeholder">查詢中...</p>`;
-  document.getElementById("totalMsg").textContent = "";
+  const resultsEl = document.getElementById("results");
+  const totalMsgEl = document.getElementById("totalMsg");
+  if (resultsEl) {
+    resultsEl.innerHTML = `<p class="placeholder">查詢中...</p>`;
+  }
+  if (totalMsgEl) {
+    totalMsgEl.textContent = "";
+  }
 }
 
 function downloadCsv(data) {
