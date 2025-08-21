@@ -9,6 +9,7 @@ function init() {
   const nextBtn = document.getElementById("nextPageBtn");
   const downloadBtn = document.getElementById("downloadCsvBtn");
 
+  console.debug("[init] binding events");
   form.addEventListener("submit", handleSearchSubmit);
   prevBtn.addEventListener("click", () => {
     if (currentPage > 1) {
@@ -60,6 +61,7 @@ function handleSearchSubmit(e) {
   }
 
   currentPage = 1;
+  console.debug("[handleSearchSubmit] valid dates, fetching", { currentPage, startDate, endDate });
   fetchResults();
 }
 
@@ -82,6 +84,7 @@ async function fetchResults() {
   if (keyword) url.searchParams.set("keyword", keyword);
 
   try {
+    console.debug("[fetchResults] GET", url.toString());
     const response = await fetch(url.toString());
     if (!response.ok) throw new Error("API 錯誤");
 
@@ -94,8 +97,8 @@ async function fetchResults() {
     renderPagination();
 
   } catch (err) {
-    console.error(err);
-    document.getElementById("results").innerHTML = `<p class="error-message">❌ 查詢失敗，請稍後再試。</p>`;
+    console.error("[fetchResults] error", err);
+    document.getElementById("results").innerHTML = `<p class=\"error-message\">❌ 查詢失敗：${(err && err.message) || err}</p>`;
   }
 }
 
