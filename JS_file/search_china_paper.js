@@ -53,11 +53,11 @@ async function fetchResults() {
   url.searchParams.set("start_date", startDate);
   url.searchParams.set("end_date", endDate);
   url.searchParams.set("limit", limit);
-  url.searchParams.set("page", currentPage);
+  url.searchParams.set("skip", currentPage);
   if (keyword) url.searchParams.set("keyword", keyword);
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(url.toString());
     if (!response.ok) throw new Error("API 錯誤");
 
     const data = await response.json();
@@ -140,8 +140,12 @@ function downloadCsv(data) {
   URL.revokeObjectURL(url);
 }
 
-// 啟動初始化
-document.addEventListener("DOMContentLoaded", init);
+// 啟動初始化（確保在腳本位於 body 底部時也能執行）
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}
 
 /*
 // 初始化
