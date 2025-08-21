@@ -80,7 +80,7 @@ async function fetchResults() {
   url.searchParams.set("start_date", startDate);
   url.searchParams.set("end_date", endDate);
   url.searchParams.set("limit", limit);
-  url.searchParams.set("page", currentPage);
+  url.searchParams.set("skip", currentPage);
   if (keyword) url.searchParams.set("keyword", keyword);
 
   try {
