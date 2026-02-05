@@ -76,3 +76,49 @@
 .footer { background: #fff; border-top: 1px solid #eee; }
 .footer-inner { max-width: 960px; margin: 0 auto; display: grid; gap: 0.25rem; padding: 1rem 0; text-align: center; }
 .footer .muted { color: #6b7280; font-size: 0.9rem; }
+
+/* ====== 首頁工具列 ====== */
+.overview-toolbar{
+  margin-top: 1rem;
+  display: flex;
+  gap: .5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.center{ text-align:center; margin: .75rem 0 2rem; }
+
+/* 讓 input/select 跟按鈕風格更一致 */
+.input, .select, input[type="date"]{
+  padding: .55rem .65rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  color: #111;
+}
+input[type="date"]{ min-width: 11rem; }
+
+/* ====== chips（熱門詞） ====== */
+.chip-row { display:flex; gap:.5rem; flex-wrap:wrap; }
+.chip {
+  display:inline-flex; align-items:center; gap:.35rem;
+  padding:.25rem .55rem;
+  border:1px solid #e5e7eb; border-radius:999px;
+  text-decoration:none; color:#111827; background:#f8fafc;
+  font-size:.9rem;
+}
+.chip:hover { background:#eef2ff; border-color:#c7d2fe; }
+.chip-count {
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width: 1.5rem;
+  padding: 0 .35rem;
+  border-radius:999px;
+  background:#e5e7eb;
+  font-size:.8rem;
+  color:#111;
+}
+
+/* ====== 表格（趨勢/詞頻） ====== */
+.tbl{ width:100%; border-collapse: collapse; }
+.tbl th, .tbl td{ padding:.55rem; border-bottom:1px solid #eee; text-align:left; }
+.tbl thead th{ background:#f8fafc; font-weight:700; }
