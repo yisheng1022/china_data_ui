@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ChinaPress Data｜資料總覽</title>
-  <meta name="description" content="中國官方報紙／平台資料總覽：今日文章數量、熱門詞彙、趨勢分析。" />
+  <title>ChinaPress Info｜資料總覽</title>
+  <meta name="description" content="中國官方報紙／平台資訊總覽：今日文章數量、熱門詞彙、趨勢分析。" />
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="data:,">
 </head>
@@ -12,7 +12,7 @@
 
   <header class="navbar">
     <div class="nav-inner">
-      <a class="brand" href="index.html">ChinaPress Data</a>
+      <a class="brand" href="index.html">ChinaPress Info</a>
       <nav class="nav-links">
         <a href="index.html" class="active">總覽</a>
         <a href="source.html">來源分析</a>
@@ -25,26 +25,26 @@
     <div class="hero-inner">
       <h1 class="hero-title">資料來源總覽</h1>
       <p class="hero-subtitle">
-        顯示各報紙／平台的<strong>每日文章數</strong>與<strong>熱門詞彙</strong>。<br />
+        顯示中國各報紙／平台的<strong>每日文章數</strong>與<strong>熱門詞彙</strong>。<br />
         點選資料來源可查看選定時間段內的<strong>趨勢變化</strong>與<strong>詞彙出現量</strong>（不提供原始資料下載）。
       </p>
 
       <div class="hero-actions">
-        <a class="btn btn-primary" href="#overview">查看今日總覽</a>
+        <a class="btn btn-primary" href="#overview">點選查看今日總覽</a>
         <a class="btn btn-secondary" href="source.html">來源分析</a>
       </div>
 
       <div class="overview-toolbar">
-        <label class="muted" for="ovDate">總覽日期</label>
+        <label class="muted" for="ovDate">設定欲查看日期</label>
         <input id="ovDate" type="date" />
-        <button id="reloadBtn" class="btn btn-secondary" type="button">重新載入</button>
+        <button id="reloadBtn" class="btn btn-secondary" type="button">顯示結果</button>
         <span id="ovStatus" class="muted"></span>
       </div>
     </div>
   </section>
 
   <main class="container narrow" id="overview">
-    <h2 class="section-title">各資料來源概況</h2>
+    <h2 class="section-title">今日各資料來源概況</h2>
 
     <div id="overviewGrid" class="card-grid">
       <article class="card muted">
