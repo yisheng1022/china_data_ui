@@ -3,101 +3,83 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>中國官方報紙資料平台｜入口首頁</title>
-  <meta name="description" content="提供中國官方報紙資料的線上查詢與下載。支援日期與關鍵字檢索，未來將串接更多資料庫。" />
+  <title>ChinaPress Data｜資料總覽</title>
+  <meta name="description" content="中國官方報紙／平台資料總覽：今日文章數量、熱門詞彙、趨勢分析。" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="data:,"> <!-- 可之後換成你的 favicon -->
+  <link rel="icon" href="data:,">
 </head>
 <body>
 
-  <!-- 導覽列 -->
   <header class="navbar">
     <div class="nav-inner">
       <a class="brand" href="index.html">ChinaPress Data</a>
       <nav class="nav-links">
-        <a href="index.html" class="active">首頁</a>
-        <a href="chinapress.html">查詢</a>
-        <a href="#" aria-disabled="true" class="muted">資料集</a>
-        <a href="#" aria-disabled="true" class="muted">關於</a>
+        <a href="index.html" class="active">總覽</a>
+        <a href="source.html">來源分析</a>
+        <a href="chinapaper.html" class="muted" aria-disabled="true" title="已停用原始資料查詢">（舊）查詢</a>
       </nav>
     </div>
   </header>
 
-  <!-- Hero 區 -->
   <section class="hero">
     <div class="hero-inner">
-      <h1 class="hero-title">中國官方資料平台</h1>
+      <h1 class="hero-title">資料來源總覽</h1>
       <p class="hero-subtitle">
-       獲得中國官方相關出版及貼文資料。<br />
-        透過日期與關鍵字快速檢索，未來將持續擴充更多資料庫。
+        顯示各報紙／平台的<strong>每日文章數</strong>與<strong>熱門詞彙</strong>。<br />
+        點選資料來源可查看選定時間段內的<strong>趨勢變化</strong>與<strong>詞彙出現量</strong>（不提供原始資料下載）。
       </p>
+
       <div class="hero-actions">
-        <a class="btn btn-primary" href="search_page.html">立即查詢</a>
-        <a class="btn btn-secondary" href="#datasets">瀏覽資料集</a>
+        <a class="btn btn-primary" href="#overview">查看今日總覽</a>
+        <a class="btn btn-secondary" href="source.html">來源分析</a>
+      </div>
+
+      <div class="overview-toolbar">
+        <label class="muted" for="ovDate">總覽日期</label>
+        <input id="ovDate" type="date" />
+        <button id="reloadBtn" class="btn btn-secondary" type="button">重新載入</button>
+        <span id="ovStatus" class="muted"></span>
       </div>
     </div>
   </section>
 
-  <!-- 功能/資料集卡片 -->
-  <main class="container narrow" id="datasets">
-    <h2 class="section-title">可用資料集</h2>
+  <main class="container narrow" id="overview">
+    <h2 class="section-title">各資料來源概況</h2>
 
-    <div class="card-grid">
-      <!-- 卡片 1：解放軍報 / 光明日報（同頁查詢） -->
-      <article class="card">
-        <div class="card-body">
-          <h3 class="card-title">中國官方報紙查詢</h3>
-          <p class="card-text">
-            支援 <strong>解放軍報（JFJB）</strong> 與 <strong>光明日報（GMB）</strong> 的日期與關鍵字檢索，結果可分頁瀏覽。
-          </p>
-          <a class="btn btn-link" href="chinapaper.html">前往查詢</a>
-        </div>
-      </article>
-
-      <!-- 卡片 2：預留未來資料集 -->
+    <div id="overviewGrid" class="card-grid">
       <article class="card muted">
         <div class="card-body">
-          <h3 class="card-title">國家通訊社資料（預告）</h3>
-          <p class="card-text">即將上線：新華社等資料索引，統一入口管理。</p>
-          <button class="btn btn-disabled" disabled>即將推出</button>
-        </div>
-      </article>
-
-      <!-- 卡片 3：預留未來資料集 -->
-      <article class="card muted">
-        <div class="card-body">
-          <h3 class="card-title">政策文件／白皮書（預告）</h3>
-          <p class="card-text">規劃中：文本下載與段落搜尋，支援主題標註。</p>
-          <button class="btn btn-disabled" disabled>規劃中</button>
+          <h3 class="card-title">載入中…</h3>
+          <p class="card-text">正在取得各資料來源的文章數與熱門詞彙。</p>
         </div>
       </article>
     </div>
+
+    <p id="ovError" class="muted center" style="display:none;"></p>
   </main>
 
-  <!-- 特色/賣點 -->
   <section class="features">
     <div class="container narrow">
-      <h2 class="section-title">關於這個網站</h2>
+      <h2 class="section-title">這個首頁提供什麼？</h2>
       <ul class="feature-list">
-        <li><strong>輕量快速：</strong> 前端純靜態、後端 FastAPI，載入迅速。</li>
-        <li><strong>學術友善：</strong> 支援日期/關鍵字檢索與分頁，便於研究與蒐集。</li>
-        <li><strong>可擴充：</strong> 後續可接更多資料庫，維持統一入口與一致體驗。</li>
-        <li><strong>成本控管：</strong> 前端 GitHub Pages、後端 Render 免費層即可運行。</li>
+        <li><strong>快速掌握：</strong> 各來源每日篇數與熱門詞。</li>
+        <li><strong>深入分析：</strong> 點進來源看日期區間趨勢與詞彙出現量。</li>
+        <li><strong>安全與合規：</strong> 前端不提供原始資料下載，僅顯示統計結果。</li>
       </ul>
     </div>
   </section>
 
-  <!-- 頁尾 -->
   <footer class="footer">
     <div class="container narrow footer-inner">
       <p>© <span id="y"></span> ChinaPress Data · 作品集專案</p>
-      <p class="muted">本網站為學術/作品展示用途。資料來源與使用請依各資料集授權為準。</p>
+      <p class="muted">本網站為學術/作品展示用途。</p>
     </div>
   </footer>
 
   <script>
-    // 動態年份（可有可無）
     document.getElementById('y').textContent = new Date().getFullYear();
   </script>
+
+  <script src="js/home_dashboard.js"></script>
 </body>
 </html>

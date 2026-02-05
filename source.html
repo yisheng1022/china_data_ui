@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ChinaPress Data｜來源分析</title>
+  <meta name="description" content="查看特定報紙／平台在選定時間段的趨勢與詞彙出現量（僅統計）。" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:,">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">ChinaPress Data</a>
+      <nav class="nav-links">
+        <a href="index.html">總覽</a>
+        <a href="source.html" class="active">來源分析</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <h1 class="hero-title" id="pageTitle">來源分析</h1>
+      <p class="hero-subtitle">
+        選擇資料來源與日期區間，查看<strong>每日篇數趨勢</strong>與<strong>詞彙出現量</strong>（不顯示原文）。
+      </p>
+
+      <div class="overview-toolbar">
+        <label class="muted" for="sourceSel">來源</label>
+        <select id="sourceSel" class="select">
+          <option value="JFJB">解放軍報（JFJB）</option>
+          <option value="GMB">光明日報（GMB）</option>
+        </select>
+
+        <label class="muted" for="start">起</label>
+        <input id="start" type="date" />
+        <label class="muted" for="end">迄</label>
+        <input id="end" type="date" />
+
+        <label class="muted" for="term">詞（可選）</label>
+        <input id="term" type="text" placeholder="例如：台灣" class="input" />
+
+        <button id="goBtn" class="btn btn-secondary" type="button">更新</button>
+        <span id="status" class="muted"></span>
+      </div>
+    </div>
+  </section>
+
+  <main class="container narrow">
+    <h2 class="section-title">每日篇數趨勢</h2>
+    <div class="card">
+      <div class="card-body">
+        <div id="dailyTable" class="muted">尚未載入</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">區間熱門詞</h2>
+    <div class="card">
+      <div class="card-body">
+        <div id="topTerms" class="chip-row muted">尚未載入</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">指定詞出現量（可選）</h2>
+    <div class="card">
+      <div class="card-body">
+        <div id="termSeries" class="muted">尚未載入</div>
+      </div>
+    </div>
+
+    <p id="err" class="muted center" style="display:none;"></p>
+  </main>
+
+  <footer class="footer">
+    <div class="container narrow footer-inner">
+      <p>© <span id="y"></span> ChinaPress Data</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+
+  <script src="js/source_dashboard.js"></script>
+</body>
+</html>
