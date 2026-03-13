@@ -1,85 +1,367 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ChinaPress Info｜資料總覽</title>
-  <meta name="description" content="中國官方報紙／平台資訊總覽：今日文章數量、熱門詞彙、趨勢分析。" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="data:,">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中國報紙數據下載站</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .loading-overlay {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .runner-img {
+            width: 250px;
+            margin-bottom: 20px;
+        }
+
+        .hint-text {
+            font-size: 0.85rem;
+            color: #777;
+            margin-top: 10px;
+        }
+
+        .table-container {
+            min-height: 300px;
+        }
+
+        .pagination-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .custom-banner {
+            /* 請將下方網址替換成你上傳後的圖片網址 */
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url('資料礦坑工作室.jpg');
+            background-size: cover;
+            background-position: center;
+            min-height: 400px;
+            /* 增加高度讓你的插圖完整展現 */
+            position: relative;
+        }
+
+        .banner-content {
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            /* 讓文字在複雜背景上更清晰 */
+        }
+
+        /* 讓導覽列項目垂直置中對齊 */
+        .nav-link {
+            display: flex;
+            align-items: center;
+        }
+
+        /* 處理像素 Icon 的顏色與銳利度 */
+        .pixel-icon {
+            margin-right: 8px;
+            /* 將黑色圖示轉為白色 */
+            filter: invert(1) brightness(2);
+            /* 保持像素圖案銳利不模糊 */
+            image-rendering: pixelated;
+            vertical-align: middle;
+        }
+
+        /* 滑鼠移上去時可以稍微變色或增加亮度 */
+        .nav-link:hover .pixel-icon {
+            filter: invert(1) brightness(5);
+        }
+
+        /* 大頭貼微調：確保它是正圓形 */
+        .navbar-brand img {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
 </head>
-<body>
 
-  <header class="navbar">
-    <div class="nav-inner">
-      <a class="brand" href="index.html">ChinaPress Info</a>
-      <nav class="nav-links">
-        <a href="index.html" class="active">總覽</a>
-        <a href="source.html">來源分析</a>
-        <a href="chinapaper.html" class="muted" aria-disabled="true" title="已停用原始資料查詢">（舊）查詢</a>
-      </nav>
-    </div>
-  </header>
+<body class="bg-light">
+    <div id="app">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+            <div class="container">
+                <a class="navbar-brand fw-bold" href="#" @click.prevent="currentView = 'home'">
+                    <img src="資料礦坑工作室(大頭貼).jpg" width="32" height="32" class="rounded-circle me-2"
+                        style="object-fit: cover;">中國報紙大數據分析平台
+                </a>
+                <div class="navbar-nav">
+                    <a class="nav-link" :class="{active: currentView === 'home'}" @click.prevent="currentView = 'home'"
+                        href="#"><img src="https://unpkg.com/pixelarticons@latest/svg/home.svg" width="24"
+                            class="pixel-icon" /> 首頁看板
+                    </a>
+                    <a class="nav-link" :class="{active: currentView === 'search'}"
+                        @click.prevent="currentView = 'search'" href="#">
+                        <img src="https://unpkg.com/pixelarticons@latest/svg/search.svg" width="24"
+                            class="pixel-icon" />數據查詢
+                    </a>
+                </div>
+            </div>
+        </nav>
 
-  <section class="hero">
-    <div class="hero-inner">
-      <h1 class="hero-title">資料來源總覽</h1>
-      <p class="hero-subtitle">
-        顯示中國各報紙／平台的<strong>每日文章數</strong>與<strong>熱門詞彙</strong>。<br />
-        點選資料來源可查看選定時間段內的<strong>趨勢變化</strong>與<strong>詞彙出現量</strong>（不提供原始資料下載）。
-      </p>
+        <div class="container">
 
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#overview">點選查看今日總覽</a>
-        <a class="btn btn-secondary" href="source.html">來源分析</a>
-      </div>
+            <div v-if="currentView === 'home'">
+                <div class="custom-banner p-5 mb-4 text-white rounded-3 shadow d-flex align-items-center">
+                    <div class="banner-content">
+                        <h1 class="display-5 fw-bold">報紙研究大數據入口</h1>
+                        <p class="fs-4">習主席十里山路不換肩，我們百萬數據不掉線。</p>
+                        <hr class="my-4">
+                        <button class="btn btn-warning btn-lg fw-bold" @click="currentView = 'search'">
+                            進入數據查詢下載
+                        </button>
+                    </div>
+                </div>
 
-      <div class="overview-toolbar">
-        <label class="muted" for="ovDate">設定欲查看日期</label>
-        <input id="ovDate" type="date" />
-        <button id="reloadBtn" class="btn btn-secondary" type="button">顯示結果</button>
-        <span id="ovStatus" class="muted"></span>
-      </div>
-    </div>
-  </section>
+                <div class="row g-4">
+                    <div class="col-md-7">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold text-primary"><img
+                                        src="https://unpkg.com/pixelarticons@latest/svg/chart-line.svg" width="24" />
+                                    報導字數趨勢</h5>
+                                <div class="py-5 text-center text-muted bg-light mt-3 rounded">
+                                    <p>圖表載入中或預留給 Chart.js...</p>
+                                    <canvas id="wordTrendChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-body position-relative">
+                                <h5 class="card-title fw-bold text-success"><img
+                                        src="https://unpkg.com/pixelarticons@latest/svg/label.svg" width="24" /> 主題分布
+                                    (LDA)</h5>
+                                <div class="under-construction">
+                                    <div class="text-center">
+                                        <img src="https://unpkg.com/pixelarticons@latest/svg/gear.svg" width="48"
+                                            class="mb-2 spin-gear" />
+                                        <p class="mb-0 fw-bold">功能建置中</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-  <main class="container narrow" id="overview">
-    <h2 class="section-title">各資料來源概況</h2>
+            <div v-show="currentView === 'search'" class="py-2">
+                <h2 class="mb-4 text-center">📰 報紙數據查詢系統</h2>
 
-    <div id="overviewGrid" class="card-grid">
-      <article class="card muted">
-        <div class="card-body">
-          <h3 class="card-title">載入中…</h3>
-          <p class="card-text">正在取得各資料來源的文章數與熱門詞彙。</p>
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-2">
+                                <label class="form-label">報紙代碼</label>
+                                <input v-model="query.paper" class="form-control" placeholder="如: JFJB">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">開始日期</label>
+                                <input v-model="query.start" type="text" class="form-control" placeholder="20180101">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">結束日期</label>
+                                <input v-model="query.end" type="text" class="form-control" placeholder="20180102">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">關鍵字</label>
+                                <input v-model="query.keyword" class="form-control" placeholder="可不填">
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button @click="searchData" class="btn btn-primary w-100" :disabled="loading">
+                                    {{ loading ? '搬運中...' : '搜尋' }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container text-center">
+                    <div v-if="loading" class="loading-overlay shadow-sm">
+                        <img src="https://media1.tenor.com/m/toLelSgUMMIAAAAC/xi-jinping.gif" class="runner-img"
+                            alt="搬運中...">
+                        <h4 class="text-primary">習主席十里山路不換肩，正在搬運數據...</h4>
+                        <p class="mb-0 text-muted">目前正在讀取 CSV 檔案並過濾關鍵字，請稍候片刻。</p>
+                        <p class="hint-text">（提示：如果查詢跨度較大，Google Apps Script 處理資料會稍慢一些）</p>
+                    </div>
+
+                    <div v-if="results.length > 0 && !loading"
+                        class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="alert alert-info mb-0 py-2">
+                            找到 {{ totalFound }} 筆資料，目前位於第 {{ currentPage }} / {{ totalPages }} 頁。
+                        </div>
+                        <button @click="downloadCSV" class="btn btn-success">
+                            📥 下載完整搜尋結果 (CSV)
+                        </button>
+                    </div>
+
+                    <div v-if="results.length > 0 && !loading"
+                        class="table-responsive bg-white shadow-sm rounded text-start">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>日期</th>
+                                    <th>報紙</th>
+                                    <th>標題</th>
+                                    <th>版次</th>
+                                    <th>主題</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in pagedResults" :key="item.Title + item.Date">
+                                    <td>{{ item.Date }}</td>
+                                    <td>{{ query.paper }}</td>
+                                    <td>{{ item.Title }}</td>
+                                    <td>{{ item.ban_num }}</td>
+                                    <td>{{ item.Subtitle || item.url || '無' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div v-if="results.length > pageSize && !loading" class="pagination-container mt-4">
+                        <button @click="prevPage" :disabled="currentPage === 1"
+                            class="btn btn-outline-primary">上一頁</button>
+                        <span class="mx-3 fw-bold">第 {{ currentPage }} 頁 / 共 {{ totalPages }} 頁</span>
+                        <button @click="nextPage" :disabled="currentPage === totalPages"
+                            class="btn btn-outline-primary">下一頁</button>
+                    </div>
+
+                    <div v-if="results.length === 0 && !loading" class="py-5 bg-white rounded shadow-sm">
+                        <p class="text-muted">請輸入日期區間並點擊搜尋開始讀取資料</p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </article>
     </div>
 
-    <p id="ovError" class="muted center" style="display:none;"></p>
-  </main>
+    <script>
+        const { createApp } = Vue;
 
-  <section class="features">
-    <div class="container narrow">
-      <h2 class="section-title">這個首頁提供什麼？</h2>
-      <ul class="feature-list">
-        <li><strong>快速掌握：</strong> 各來源每日篇數與熱門詞。</li>
-        <li><strong>深入分析：</strong> 點進來源看日期區間趨勢與詞彙出現量。</li>
-        <li><strong>安全與合規：</strong> 前端不提供原始資料下載，僅顯示統計結果。</li>
-      </ul>
-    </div>
-  </section>
+        createApp({
+            data() {
+                return {
+                    currentView: 'home', // 預設顯示首頁入口
+                    apiUrl: 'https://script.google.com/macros/s/AKfycbz-2FhJJ5nFjTAJgpk2o2cSrgY7uh_NsXadUsYvy3vMeNGRsL0Aqqi4ftGBcD-r_p8/exec',
+                    loading: false,
+                    query: {
+                        paper: 'JFJB',
+                        start: '20180101',
+                        end: '20180102',
+                        keyword: ''
+                    },
+                    results: [],      // 這裡儲存所有 87 筆資料
+                    totalFound: 0,
+                    currentPage: 1,
+                    pageSize: 20
+                }
+            },
+            computed: {
+                // 計算總頁數，確保它是根據 results 的長度即時計算
+                totalPages() {
+                    const count = Math.ceil(this.results.length / this.pageSize);
+                    return count > 0 ? count : 1;
+                },
+                // 切割出當前頁面要顯示的 20 筆
+                pagedResults() {
+                    const startIdx = (this.currentPage - 1) * this.pageSize;
+                    const endIdx = startIdx + this.pageSize;
+                    return this.results.slice(startIdx, endIdx);
+                }
+            },
+            methods: {
+                async searchData() {
+                    // 日期檢查邏輯保持不變...
+                    const parseDate = (str) => new Date(str.substring(0, 4), str.substring(4, 6) - 1, str.substring(6, 8));
+                    const d1 = parseDate(this.query.start);
+                    const d2 = parseDate(this.query.end);
+                    const diffDays = (d2 - d1) / (1000 * 60 * 60 * 24);
 
-  <footer class="footer">
-    <div class="container narrow footer-inner">
-      <p>© <span id="y"></span> ChinaPress Data · 作品集專案</p>
-      <p class="muted">本網站為學術/作品展示用途。</p>
-    </div>
-  </footer>
+                    if (isNaN(diffDays) || diffDays < 0) {
+                        alert("請輸入正確的日期格式 (如 20180101)");
+                        return;
+                    }
+                    if (diffDays > 30) {
+                        alert("⚠️ 單次查詢跨度請勿超過 30 天！");
+                        return;
+                    }
 
-  <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
+                    // 開始搜尋前重置狀態
+                    this.results = [];
+                    this.totalFound = 0;
+                    this.currentPage = 1;
+                    this.loading = true;
 
-  <script src="js/home_dashboard.js"></script>
+                    const url = `${this.apiUrl}?paper=${this.query.paper}&start=${this.query.start}&end=${this.query.end}&keyword=${this.query.keyword}`;
+
+                    try {
+                        const response = await fetch(url);
+                        const res = await response.json();
+
+                        if (res.success && res.data) {
+                            // 1. 先排序
+                            const sortedData = res.data.sort((a, b) => {
+                                return new Date(a.Date) - new Date(b.Date);
+                            });
+                            // 2. 再賦值給 results
+                            this.results = sortedData;
+                            // 3. 更新總筆數
+                            this.totalFound = this.results.length;
+                        } else {
+                            alert('搜尋失敗：' + (res.error || '無資料'));
+                        }
+                    } catch (error) {
+                        alert('連線失敗，請檢查 API 設定');
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                prevPage() {
+                    if (this.currentPage > 1) {
+                        this.currentPage--;
+                        this.scrollToTop();
+                    }
+                },
+                nextPage() {
+                    if (this.currentPage < this.totalPages) {
+                        this.currentPage++;
+                        this.scrollToTop();
+                    }
+                },
+                scrollToTop() {
+                    // 換頁後自動捲動到表格頂端，優化體驗
+                    const element = document.querySelector(".table-responsive");
+                    if (element) element.scrollIntoView({ behavior: 'smooth' });
+                },
+                downloadCSV() {
+                    // 下載邏輯保持不變...
+                    if (this.results.length === 0) return;
+                    const headers = Object.keys(this.results[0]).join(",");
+                    const rows = this.results.map(obj =>
+                        Object.values(obj).map(val => `"${String(val).replace(/"/g, '""')}"`).join(",")
+                    );
+                    const csvContent = "\uFEFF" + headers + "\n" + rows.join("\n");
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const link = document.createElement("a");
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute("href", url);
+                    link.setAttribute("download", `Results_${this.query.start}.csv`);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
+        }).mount('#app')
+    </script>
 </body>
+
 </html>
