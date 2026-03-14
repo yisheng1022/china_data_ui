@@ -4,11 +4,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 def read_file(base_path, paper_list):
-    """
-    生成器：讀取各報紙每年的 CSV 檔案
-    """
     for paper in paper_list:
-        for year in range(2024, 2025):
+        for year in range(2018, 2024):
             # 使用 / 運算子直接拼接路徑，完全不用理會系統斜線問題
             year_path = base_path / paper / str(year)
             
@@ -28,20 +25,17 @@ if __name__ == '__main__':
     # 取得環境變數中的 PAPER_PATH，若沒有則預設為當前目錄 '.'
     paper_path_env = os.getenv('PAPER_PATH', '.')
     base_path = Path(paper_path_env)
-    # paper_list = ['JFJB', 'GMB', 'RMRB']
-    paper_list = ['RMRB']
-
+    paper_list = ['RMRB'] #'JFJB', 'GMB', 
+    word_count_info = []
     # 透過 for 迴圈來接 yield 出來的 DataFrame
     for year_path,file_name, daily_df in read_file(base_path, paper_list):
         print(f"正在處理: {file_name}... ", end="\r")
-        
-        if 'content' in daily_df.columns:
-            # .str.replace(r'[^\u4e00-\u9fa5]', '', regex=True) : 把標點符號、英數字等「非中文字元」消掉
-            daily_df['ch_word_counts'] = daily_df['content'].astype(str)\
-                                                            .str.replace(r'[^\u4e00-\u9fa5]', '', regex=True)\
-                                                            .str.len()
-            daily_df.to_csv(year_path/file_name, index = False, encoding = 'utf-8-sig',mode = 'w')
+        paper_date = file_name.split('.')[0]
+        if 'ch_word_counts' in daily_df.columns:
+            word_count_info.append([paper_date,daily_df['ch_word_counts'].mean()])
         else:
-            print(f"警告：找不到 content 欄位！")
-            
-        
+            print(f"警告：找不到 Content 欄位！")
+
+    word_count_info_df = pd.DataFrame(word_count_info,columns = ['paper_date','word_count'])
+    word_count_info_df.to_csv(f'{year_path}/word_count_info.csv',index = False,encoding = 'utf-8-sig',mode = 'w')
+        # daily_df.to_csv(year_path/file_name, index = False, encoding = 'utf-8-sig',mode = 'w')

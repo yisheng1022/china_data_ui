@@ -82,6 +82,22 @@
         .navbar-brand img {
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
+
+        /* 功能建置中遮罩 */
+        .under-construction {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            border-radius: 0.375rem;
+        }
     </style>
 </head>
 
@@ -122,31 +138,49 @@
                 </div>
 
                 <div class="row g-4">
-                    <div class="col-md-7">
+                    <div class="col-md-8">
                         <div class="card shadow-sm border-0 h-100">
                             <div class="card-body">
                                 <h5 class="card-title fw-bold text-primary"><img
-                                        src="https://unpkg.com/pixelarticons@latest/svg/chart-line.svg" width="24" />
-                                    報導字數趨勢</h5>
-                                <div class="py-5 text-center text-muted bg-light mt-3 rounded">
-                                    <p>圖表載入中或預留給 Chart.js...</p>
-                                    <canvas id="wordTrendChart"></canvas>
+                                        src="https://unpkg.com/pixelarticons@latest/svg/square-chevron-up.svg"
+                                        width="24" /> 報導字數趨勢
+                                </h5>
+                                <div style="height: 300px;">
+                                    <canvas id="wordCountChart"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-5">
+
+                    <div class="col-md-4">
                         <div class="card shadow-sm border-0 h-100">
                             <div class="card-body position-relative">
                                 <h5 class="card-title fw-bold text-success"><img
-                                        src="https://unpkg.com/pixelarticons@latest/svg/label.svg" width="24" /> 主題分布
+                                        src="https://unpkg.com/pixelarticons@latest/svg/icon-category.svg" width="24" />
+                                    主題分布
                                     (LDA)</h5>
                                 <div class="under-construction">
                                     <div class="text-center">
-                                        <img src="https://unpkg.com/pixelarticons@latest/svg/gear.svg" width="48"
-                                            class="mb-2 spin-gear" />
+                                        <img src="https://unpkg.com/pixelarticons@latest/svg/braces-content.svg"
+                                            width="48" class="mb-2" />
                                         <p class="mb-0 fw-bold">功能建置中</p>
                                     </div>
+                                </div>
+                                <canvas id="ldaChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body position-relative" style="min-height: 200px;">
+                                <h5 class="card-title fw-bold text-info"><img
+                                        src="https://unpkg.com/pixelarticons@latest/svg/fire.svg" width="24" />
+                                    熱門關鍵字分析</h5>
+                                <div class="under-construction">
+                                    <img src="https://unpkg.com/pixelarticons@latest/svg/braces-content.svg" width="48"
+                                        class="mb-2" />
+                                    <p class="mb-0 fw-bold">功能建置中</p>
                                 </div>
                             </div>
                         </div>
@@ -244,124 +278,8 @@
         </div>
     </div>
 
-    <script>
-        const { createApp } = Vue;
-
-        createApp({
-            data() {
-                return {
-                    currentView: 'home', // 預設顯示首頁入口
-                    apiUrl: 'https://script.google.com/macros/s/AKfycbz-2FhJJ5nFjTAJgpk2o2cSrgY7uh_NsXadUsYvy3vMeNGRsL0Aqqi4ftGBcD-r_p8/exec',
-                    loading: false,
-                    query: {
-                        paper: 'JFJB',
-                        start: '20180101',
-                        end: '20180102',
-                        keyword: ''
-                    },
-                    results: [],      // 這裡儲存所有 87 筆資料
-                    totalFound: 0,
-                    currentPage: 1,
-                    pageSize: 20
-                }
-            },
-            computed: {
-                // 計算總頁數，確保它是根據 results 的長度即時計算
-                totalPages() {
-                    const count = Math.ceil(this.results.length / this.pageSize);
-                    return count > 0 ? count : 1;
-                },
-                // 切割出當前頁面要顯示的 20 筆
-                pagedResults() {
-                    const startIdx = (this.currentPage - 1) * this.pageSize;
-                    const endIdx = startIdx + this.pageSize;
-                    return this.results.slice(startIdx, endIdx);
-                }
-            },
-            methods: {
-                async searchData() {
-                    // 日期檢查邏輯保持不變...
-                    const parseDate = (str) => new Date(str.substring(0, 4), str.substring(4, 6) - 1, str.substring(6, 8));
-                    const d1 = parseDate(this.query.start);
-                    const d2 = parseDate(this.query.end);
-                    const diffDays = (d2 - d1) / (1000 * 60 * 60 * 24);
-
-                    if (isNaN(diffDays) || diffDays < 0) {
-                        alert("請輸入正確的日期格式 (如 20180101)");
-                        return;
-                    }
-                    if (diffDays > 30) {
-                        alert("⚠️ 單次查詢跨度請勿超過 30 天！");
-                        return;
-                    }
-
-                    // 開始搜尋前重置狀態
-                    this.results = [];
-                    this.totalFound = 0;
-                    this.currentPage = 1;
-                    this.loading = true;
-
-                    const url = `${this.apiUrl}?paper=${this.query.paper}&start=${this.query.start}&end=${this.query.end}&keyword=${this.query.keyword}`;
-
-                    try {
-                        const response = await fetch(url);
-                        const res = await response.json();
-
-                        if (res.success && res.data) {
-                            // 1. 先排序
-                            const sortedData = res.data.sort((a, b) => {
-                                return new Date(a.Date) - new Date(b.Date);
-                            });
-                            // 2. 再賦值給 results
-                            this.results = sortedData;
-                            // 3. 更新總筆數
-                            this.totalFound = this.results.length;
-                        } else {
-                            alert('搜尋失敗：' + (res.error || '無資料'));
-                        }
-                    } catch (error) {
-                        alert('連線失敗，請檢查 API 設定');
-                    } finally {
-                        this.loading = false;
-                    }
-                },
-                prevPage() {
-                    if (this.currentPage > 1) {
-                        this.currentPage--;
-                        this.scrollToTop();
-                    }
-                },
-                nextPage() {
-                    if (this.currentPage < this.totalPages) {
-                        this.currentPage++;
-                        this.scrollToTop();
-                    }
-                },
-                scrollToTop() {
-                    // 換頁後自動捲動到表格頂端，優化體驗
-                    const element = document.querySelector(".table-responsive");
-                    if (element) element.scrollIntoView({ behavior: 'smooth' });
-                },
-                downloadCSV() {
-                    // 下載邏輯保持不變...
-                    if (this.results.length === 0) return;
-                    const headers = Object.keys(this.results[0]).join(",");
-                    const rows = this.results.map(obj =>
-                        Object.values(obj).map(val => `"${String(val).replace(/"/g, '""')}"`).join(",")
-                    );
-                    const csvContent = "\uFEFF" + headers + "\n" + rows.join("\n");
-                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                    const link = document.createElement("a");
-                    const url = URL.createObjectURL(blob);
-                    link.setAttribute("href", url);
-                    link.setAttribute("download", `Results_${this.query.start}.csv`);
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                }
-            }
-        }).mount('#app')
-    </script>
+    <script src="chart.js"></script>
+    <script src="main.js"></script>
 </body>
 
 </html>
